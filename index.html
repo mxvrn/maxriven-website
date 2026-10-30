@@ -93,15 +93,13 @@
               <span class="mono">VISUAL AREA 001 / 2026</span>
             </div>
           </div>
-          <!-- 3D text bands orbiting the M logo; the glyph panels are built in js/main.js -->
+          <!-- 3D rings around the M logo, drawn in js/main.js: the back half behind the logo, the front half in front -->
           <div class="orbit-stage" aria-hidden="true">
+            <canvas class="ring3d ring3d--back"></canvas>
             <div class="orbit-scene">
-              <span class="orbit orbit--a"></span>
-              <span class="orbit orbit--b"></span>
-              <div class="ring" data-ring="MAXRIVEN · NEW MUSIC · NEW TOOLS · 2026 · "></div>
-              <div class="ring ring--slow" data-ring="INSANE OUT NOW // 500K+ SUBSCRIBERS // 79 VIDEOS // MXVRN AUDIO // "></div>
               <img class="orbit-core" src="assets/logo/maxriven-m-logo-512.png" width="512" height="512" decoding="async" alt="">
             </div>
+            <canvas class="ring3d ring3d--front" data-band="MAXRIVEN · NEW MUSIC · NEW TOOLS · 2026" data-thin="INSANE OUT NOW // 500K+ SUBSCRIBERS // 79 VIDEOS // MXVRN AUDIO // "></canvas>
           </div>
           <div class="module__bottom">
             <div>
