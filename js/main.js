@@ -122,7 +122,7 @@
       var btn = e.target.closest('[data-yt]');
       if (btn) playVideo(btn.getAttribute('data-yt'), 'Insane');
     });
-    // Video tiles and release covers are plain YouTube links; with JS they play in the player instead.
+    // Video tiles are plain YouTube links; with JS they play in the player instead.
     document.querySelectorAll('[data-yt-tile]').forEach(function (tile) {
       tile.addEventListener('click', function (e) {
         e.preventDefault();
