@@ -1,4 +1,4 @@
-// MAXRIVEN — mobile menu, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
+// MAXRIVEN — mobile menu, the hero Insane preview, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
 (function () {
   'use strict';
 
@@ -139,6 +139,80 @@
     });
   }
 
+  // Hero release card: the cover plays a 45 s preview of Insane right on the page (nothing loads
+  // until the first tap). The bars follow levels measured from the master, and a dock with a
+  // Spotify link stays on screen while it plays and the card is scrolled away.
+  var level = 0;
+  var card = document.querySelector('[data-preview]');
+  if (card) {
+    var audio = new Audio(), DUR = 45, env = null, loaded = false;
+    audio.preload = 'none';
+    var dock = document.querySelector('[data-dock]');
+    // starting the preview puts a playing music video back to its poster
+    var vplayer = document.querySelector('[data-yt-player]'), facade = vplayer ? vplayer.innerHTML : '';
+    var toggles = document.querySelectorAll('[data-preview-toggle]'), times = document.querySelectorAll('[data-preview-time]');
+    var fills = document.querySelectorAll('.np__bar i, .dock__bar i'), bars = card.querySelectorAll('.np__eq i'), seekBar = card.querySelector('[data-preview-seek]');
+    var fmt = function (t) { t = Math.max(0, Math.floor(t)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); };
+    var load = function () {
+      if (loaded) return; loaded = true; audio.src = card.getAttribute('data-preview');
+      fetch(card.getAttribute('data-levels')).then(function (r) { return r.json(); }).then(function (d) {
+        var b = atob(d.env); env = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) env[i] = b.charCodeAt(i);
+      }).catch(function () {});
+    };
+    // L/R RMS every 1/30 s, stored as (dB + 60) * 4
+    var levelAt = function (t) {
+      if (!env) return 0.5 + 0.3 * Math.sin(t * 9);
+      var i = Math.min(env.length / 2 - 1, Math.max(0, Math.floor(t * 30)));
+      var db = Math.max(env[2 * i], env[2 * i + 1]) / 4 - 60;
+      return Math.min(1, Math.max(0, (db + 26) / 22));
+    };
+    var shown = false, cardVisible = true;
+    var setDock = function () {
+      var show = !audio.paused && !cardVisible; if (show === shown) return; shown = show;
+      dock.classList.toggle('is-shown', show); dock.setAttribute('aria-hidden', show ? 'false' : 'true');
+      dock.querySelectorAll('button, a').forEach(function (el) { el.tabIndex = show ? 0 : -1; });
+    };
+    var ui = function () {
+      var on = !audio.paused;
+      [card, dock].forEach(function (el) { el.classList.toggle('is-playing', on); });
+      toggles.forEach(function (b) { b.setAttribute('aria-label', (on ? 'Pause' : 'Play') + ' the Insane preview'); });
+      setDock();
+    };
+    var raf = 0, sm = 0;
+    var paint = function () {
+      var t = audio.currentTime || 0, on = !audio.paused;
+      var target = on ? levelAt(t) : 0; sm += (target - sm) * 0.35; level = sm;
+      fills.forEach(function (f) { f.style.setProperty('--p', (t / DUR * 100) + '%'); });
+      times.forEach(function (el) { el.textContent = (loaded ? fmt(t) + ' / 0:45' : el.textContent); });
+      bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + Math.max(0.18, Math.min(1, sm * (0.75 + 0.45 * Math.abs(Math.sin(t * 7 + i * 1.7))))) + ')'; });
+      seekBar.setAttribute('aria-valuenow', Math.round(t));
+      if (on || sm > 0.01) raf = requestAnimationFrame(paint);
+    };
+    var toggle = function () {
+      load();
+      if (audio.paused) {
+        if (vplayer && vplayer.querySelector('iframe')) vplayer.innerHTML = facade;
+        var p = audio.play(); if (p && p.catch) p.catch(function () {});
+      } else audio.pause();
+    };
+    toggles.forEach(function (b) { b.addEventListener('click', toggle); });
+    audio.addEventListener('play', function () { ui(); cancelAnimationFrame(raf); paint(); });
+    audio.addEventListener('pause', ui);
+    audio.addEventListener('ended', function () { audio.currentTime = 0; ui(); paint(); });
+    var seek = function (x) { load(); var r = seekBar.getBoundingClientRect(); audio.currentTime = Math.min(DUR - 0.1, Math.max(0, (x - r.left) / r.width * DUR)); paint(); };
+    var drag = false;
+    seekBar.addEventListener('pointerdown', function (e) { drag = true; seekBar.setPointerCapture(e.pointerId); seek(e.clientX); });
+    seekBar.addEventListener('pointermove', function (e) { if (drag) seek(e.clientX); });
+    seekBar.addEventListener('pointerup', function () { drag = false; });
+    seekBar.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      load(); audio.currentTime = Math.min(DUR - 0.1, Math.max(0, audio.currentTime + (e.key === 'ArrowRight' ? 5 : -5))); paint(); e.preventDefault();
+    });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { cardVisible = e[0].isIntersecting; setDock(); }).observe(card);
+    // and starting a music video stops the preview
+    document.addEventListener('click', function (e) { if (e.target.closest('[data-yt], [data-yt-tile], [data-yt-jump]')) audio.pause(); }, true);
+  }
+
   // Hero visual area: a band of type and a thin text ring around the M logo, as real 3D rings.
   // Each ring is a texture strip cut into thin columns and projected in perspective; columns
   // facing away go on the canvas behind the logo (mirrored, dimmed), the rest on the one in front.
@@ -225,7 +299,7 @@
     };
     var phase = 0, last = 0, on = true, raf = 0;
     var frame = function (now) {
-      var dt = Math.min(0.05, last ? (now - last) / 1000 : 0); last = now; phase -= dt * 0.35;
+      var dt = Math.min(0.05, last ? (now - last) / 1000 : 0); last = now; phase -= dt * (0.35 + level * 1.4);
       [xB, xF].forEach(function (x) { x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, front.width, front.height); });
       rings.forEach(function (g) { drawRing(g, phase * g.spd); });
       if (on && !still) raf = requestAnimationFrame(frame);

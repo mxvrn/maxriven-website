@@ -19,8 +19,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="assets/logo/maxriven-m-logo-512.png">
 <link rel="icon" type="image/png" href="assets/logo/favicon-64.png">
-<link rel="stylesheet" href="css/fonts.css?v=20261031">
-<link rel="stylesheet" href="css/style.css?v=20261031">
+<link rel="stylesheet" href="css/fonts.css?v=20261031b">
+<link rel="stylesheet" href="css/style.css?v=20261031b">
 </head>
 <body>
 
@@ -65,15 +65,19 @@
       <div class="hero__grid">
         <div class="hero__copy">
           <div class="vent-diag">
-            <a class="now-playing" href="https://open.spotify.com/track/7nKpHf9WcYCSeT99ErZT76" target="_blank" rel="noopener">
-              <img src="assets/covers/insane-600.jpg" width="600" height="600" decoding="async" alt="Cover art for Insane by MAXRIVEN">
+            <div class="now-playing" data-preview="assets/audio/insane-preview.m4a" data-levels="assets/audio/insane-data.json">
+              <button class="np__cover" type="button" data-preview-toggle aria-label="Play a 45 second preview of Insane">
+                <img src="assets/covers/insane-600.jpg" width="600" height="600" decoding="async" alt="">
+                <span class="np__btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="np__ico-play" d="M8 5v14l11-7z"/><path class="np__ico-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></span>
+              </button>
               <span class="np__text">
                 <span class="np__label">LATEST RELEASE · 2026</span>
                 <span class="np__title">INSANE</span>
-                <span class="np__cta">▶ PLAY ON SPOTIFY</span>
+                <span class="np__bar" data-preview-seek role="slider" tabindex="0" aria-label="Preview position" aria-valuemin="0" aria-valuemax="45" aria-valuenow="0"><i></i></span>
+                <span class="np__meta"><span class="np__time" data-preview-time>45 S PREVIEW</span><a class="np__cta" href="https://open.spotify.com/track/7nKpHf9WcYCSeT99ErZT76" target="_blank" rel="noopener"><span class="np__long">FULL TRACK ON </span>SPOTIFY ↗</a></span>
               </span>
               <span class="np__eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
-            </a>
+            </div>
           </div>
           <div>
             <p class="kicker">// OFFICIAL SITE</p>
@@ -356,6 +360,15 @@
 
 </main>
 
+<!-- appears while the Insane preview plays and its hero card is out of view -->
+<div class="dock" data-dock aria-hidden="true">
+  <img src="assets/covers/insane-600.jpg" width="600" height="600" decoding="async" alt="">
+  <button class="dock__btn" type="button" data-preview-toggle aria-label="Pause the Insane preview" tabindex="-1"><svg viewBox="0 0 24 24"><path class="np__ico-play" d="M8 5v14l11-7z"/><path class="np__ico-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+  <span class="dock__text"><b>INSANE</b><span data-preview-time>0:00 / 0:45</span></span>
+  <span class="dock__bar"><i></i></span>
+  <a class="dock__cta" href="https://open.spotify.com/track/7nKpHf9WcYCSeT99ErZT76" target="_blank" rel="noopener" tabindex="-1">SAVE ON SPOTIFY ↗</a>
+</div>
+
 <footer class="wrap footer">
   <span>© <span data-year>2026</span> MAXRIVEN · ALL RIGHTS RESERVED</span>
   <span>MELODIES THAT HIT HARD · <a href="https://open.spotify.com/artist/2e1sXIH8toptMri6Xx2iW2" target="_blank" rel="noopener">SPOTIFY ↗</a> · <a href="https://www.youtube.com/@maxriven" target="_blank" rel="noopener">YOUTUBE ↗</a></span>
@@ -373,7 +386,7 @@
   <img class="lightbox__img" alt="">
 </dialog>
 
-<script src="js/background.js?v=20261031"></script>
-<script src="js/main.js?v=20261031"></script>
+<script src="js/background.js?v=20261031b"></script>
+<script src="js/main.js?v=20261031b"></script>
 </body>
 </html>
