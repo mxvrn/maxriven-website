@@ -19,8 +19,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="assets/logo/maxriven-m-logo-512.png">
 <link rel="icon" type="image/png" href="assets/logo/favicon-64.png">
-<link rel="stylesheet" href="css/fonts.css?v=20261031b">
-<link rel="stylesheet" href="css/style.css?v=20261031b">
+<link rel="stylesheet" href="css/fonts.css?v=20261031c">
+<link rel="stylesheet" href="css/style.css?v=20261031c">
 </head>
 <body>
 
@@ -360,6 +360,33 @@
 
 </main>
 
+<!-- listening room: a release opens here with Spotify's own player instead of leaving the site -->
+<div class="room" data-room role="dialog" aria-modal="true" aria-labelledby="room-title" hidden>
+  <div class="room__bg" data-room-bg aria-hidden="true"></div>
+  <div class="room__inner">
+    <div class="room__top">
+      <span class="mono" data-room-count>01 / 08</span>
+      <button class="room__close" type="button" data-room-close aria-label="Close the listening room">✕</button>
+    </div>
+    <div class="room__body">
+      <div class="room__art">
+        <img data-room-img src="" width="600" height="600" alt="">
+        <button class="room__nav room__nav--prev" type="button" data-room-step="-1" aria-label="Previous release">←</button>
+        <button class="room__nav room__nav--next" type="button" data-room-step="1" aria-label="Next release">→</button>
+      </div>
+      <div class="room__side">
+        <p class="kicker">// LISTENING ROOM</p>
+        <h2 class="room__title" id="room-title" data-room-title>INSANE</h2>
+        <div class="room__player" data-room-player></div>
+        <div class="room__actions">
+          <a class="btn btn--accent" data-room-open href="#" target="_blank" rel="noopener">OPEN IN SPOTIFY ↗</a>
+          <a class="btn btn--line" href="https://open.spotify.com/artist/2e1sXIH8toptMri6Xx2iW2" target="_blank" rel="noopener">FOLLOW MAXRIVEN ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- appears while the Insane preview plays and its hero card is out of view -->
 <div class="dock" data-dock aria-hidden="true">
   <img src="assets/covers/insane-600.jpg" width="600" height="600" decoding="async" alt="">
@@ -386,7 +413,7 @@
   <img class="lightbox__img" alt="">
 </dialog>
 
-<script src="js/background.js?v=20261031b"></script>
-<script src="js/main.js?v=20261031b"></script>
+<script src="js/background.js?v=20261031c"></script>
+<script src="js/main.js?v=20261031c"></script>
 </body>
 </html>

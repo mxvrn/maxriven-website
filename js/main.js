@@ -1,4 +1,4 @@
-// MAXRIVEN — mobile menu, the hero Insane preview, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
+// MAXRIVEN — mobile menu, the hero Insane preview, the listening room, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
 (function () {
   'use strict';
 
@@ -209,8 +209,76 @@
       load(); audio.currentTime = Math.min(DUR - 0.1, Math.max(0, audio.currentTime + (e.key === 'ArrowRight' ? 5 : -5))); paint(); e.preventDefault();
     });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { cardVisible = e[0].isIntersecting; setDock(); }).observe(card);
-    // and starting a music video stops the preview
+    // and starting a music video, or opening the listening room, stops the preview
+    document.addEventListener('mx:stop-audio', function () { audio.pause(); });
     document.addEventListener('click', function (e) { if (e.target.closest('[data-yt], [data-yt-tile], [data-yt-jump]')) audio.pause(); }, true);
+  }
+
+  // Listening room: with JS, a release cover opens over the page with Spotify's own player
+  // (preview, or the full track for signed-in listeners) instead of sending the visitor away.
+  var room = document.querySelector('[data-room]');
+  var covers = Array.prototype.slice.call(document.querySelectorAll('.releases .cover'));
+  if (room && covers.length) {
+    var items = covers.map(function (a) {
+      var li = a.closest('.release'), img = a.querySelector('img'), t = li && li.querySelector('.release__title');
+      var m = a.getAttribute('href').match(/open\.spotify\.com\/(track|album|artist)\/([A-Za-z0-9]+)/);
+      return { link: a.getAttribute('href'), kind: m && m[1], id: m && m[2], title: t ? t.textContent : '', img: img.currentSrc || img.getAttribute('src'), big: img.getAttribute('src').replace('-600.', '-1200.') };
+    });
+    var current = 0, lastFocus = null;
+    var q = function (sel) { return room.querySelector(sel); };
+    var show = function (i) {
+      current = (i + items.length) % items.length;
+      var it = items[current];
+      q('[data-room-img]').src = it.big; q('[data-room-img]').alt = 'Cover art for ' + it.title + ' by MAXRIVEN';
+      q('[data-room-bg]').style.backgroundImage = 'url("' + it.img + '")';
+      q('[data-room-title]').textContent = it.title;
+      q('[data-room-count]').textContent = ('0' + (current + 1)).slice(-2) + ' / ' + ('0' + items.length).slice(-2);
+      q('[data-room-open]').href = it.link;
+      var box = q('[data-room-player]'); box.innerHTML = '';
+      if (it.id) {
+        var f = document.createElement('iframe');
+        f.src = 'https://open.spotify.com/embed/' + it.kind + '/' + it.id + '?utm_source=generator&theme=0';
+        f.title = 'Spotify player: ' + it.title + ' by MAXRIVEN';
+        f.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+        f.loading = 'lazy';
+        box.appendChild(f);
+      }
+    };
+    var open = function (i) {
+      lastFocus = document.activeElement;
+      document.dispatchEvent(new CustomEvent('mx:stop-audio'));
+      show(i); room.hidden = false;
+      document.documentElement.classList.add('room-open');
+      requestAnimationFrame(function () { room.classList.add('is-open'); });
+      q('[data-room-close]').focus();
+    };
+    var close = function () {
+      room.classList.remove('is-open'); document.documentElement.classList.remove('room-open');
+      q('[data-room-player]').innerHTML = '';
+      room.hidden = true;
+      if (lastFocus) lastFocus.focus();
+    };
+    covers.forEach(function (a, i) { a.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault(); open(i);
+    }); });
+    q('[data-room-close]').addEventListener('click', close);
+    room.addEventListener('click', function (e) {
+      var step = e.target.closest('[data-room-step]');
+      if (step) show(current + Number(step.getAttribute('data-room-step')));
+      else if (e.target === room || e.target === q('.room__inner')) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (room.hidden) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowRight' && e.target.tagName !== 'IFRAME') show(current + 1);
+      else if (e.key === 'ArrowLeft' && e.target.tagName !== 'IFRAME') show(current - 1);
+      else if (e.key === 'Tab') {
+        var f = room.querySelectorAll('button, a[href], iframe'), first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+        else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+      }
+    });
   }
 
   // Hero visual area: a band of type and a thin text ring around the M logo, as real 3D rings.
