@@ -554,3 +554,35 @@ a.cover:hover .cover__play, a.cover:focus-visible .cover__play { transform: scal
 @media (max-width: 600px) { .cover__play { width: 34px; height: 34px; font-size: 11px; right: 10px; bottom: 10px; } }
 /* Same Safari-safe sizing for the featured hoodie photo (4:5). */
 .product__photo--image { aspect-ratio: auto; height: 0; padding-top: 125%; }
+
+/* ---------- Merch: turn the hoodie, pick colour and size, join the drop list ---------- */
+.product--feature { position: relative; }
+.product--feature .product__photo { transform-style: preserve-3d; transition: transform 0.28s ease-in; touch-action: pan-y; }
+.product__photo.is-turning { transform: perspective(1400px) rotateY(90deg); }
+.product__photo.is-landing { transition: none; transform: perspective(1400px) rotateY(-90deg); }
+.turn { position: absolute; left: 14px; top: 14px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 0; border-radius: 999px;
+  background: rgba(11, 11, 11, 0.85); color: var(--white); font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.turn span { font-size: 15px; transition: transform 0.5s; }
+.turn:hover { background: var(--accent); color: var(--ink); }
+.turn:hover span { transform: rotate(180deg); }
+.drop { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; padding-top: 18px; border-top: 1px solid var(--line); }
+.drop__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.drop__row legend { float: left; width: 72px; padding: 0; font-size: 10px; color: var(--muted); }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span { display: inline-flex; align-items: center; gap: 8px; min-width: 44px; height: 40px; padding: 0 14px; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white); cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s; }
+.chip span i { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4); }
+.chip:hover span { border-color: var(--white); }
+.chip input:checked + span { background: var(--white); color: var(--ink); border-color: var(--white); }
+.chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 3px; }
+.drop__go { align-self: flex-start; }
+.drop__note { margin: 0; font-size: 10px; line-height: 1.6; color: var(--muted); }
+.drop__note b { color: var(--white); font-weight: 400; }
+.drop__note button { margin-left: 6px; padding: 2px 8px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; background: none; color: var(--white); font: inherit; cursor: pointer; }
+@media (max-width: 760px) {
+  .drop__row legend { width: 100%; margin-bottom: 2px; }
+  .drop__go { align-self: stretch; justify-content: center; }
+  .drop__go [data-drop-pick] { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .product--feature .product__photo { transition: none; } }

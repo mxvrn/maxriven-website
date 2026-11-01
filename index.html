@@ -19,8 +19,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="assets/logo/maxriven-m-logo-512.png">
 <link rel="icon" type="image/png" href="assets/logo/favicon-64.png">
-<link rel="stylesheet" href="css/fonts.css?v=20261031b">
-<link rel="stylesheet" href="css/style.css?v=20261031b">
+<link rel="stylesheet" href="css/fonts.css?v=20261101a">
+<link rel="stylesheet" href="css/style.css?v=20261101a">
 </head>
 <body>
 
@@ -330,6 +330,7 @@
             <img data-main src="assets/merch/hoodie-black-back-600.jpg" srcset="assets/merch/hoodie-black-back-600.jpg 600w, assets/merch/hoodie-black-back-full.jpg 1200w" sizes="(max-width: 600px) 92vw, (max-width: 1300px) 46vw, 440px" width="600" height="1075" loading="lazy" decoding="async" alt="Black MAXRIVEN hoodie, back: large glitched M logo in white with pink and cyan offsets, MAXRIVEN and katakana lettering, pink stripes and barcodes on the sleeves">
             <span class="product__tab" aria-hidden="true"></span>
           </button>
+          <button class="turn" type="button" data-turn aria-label="Turn the hoodie around"><span aria-hidden="true">↻</span> TURN</button>
           <div class="product__info">
             <div class="product__top"><span class="mono">MERCH / 01</span><span class="badge">COMING SOON</span></div>
             <h3 class="product__name">HOODIE</h3>
@@ -340,6 +341,25 @@
               <button class="thumb" type="button" aria-pressed="false" data-full="assets/merch/hoodie-white-back-full.jpg" data-fullw="1200"><img src="assets/merch/hoodie-white-back-600.jpg" width="600" height="1075" loading="lazy" decoding="async" alt="White MAXRIVEN hoodie, back: large glitched M logo in black with pink and cyan offsets, MAXRIVEN and katakana lettering"></button>
               <button class="thumb" type="button" aria-pressed="false" data-full="assets/merch/hoodie-white-front-full.jpg" data-fullw="1200"><img src="assets/merch/hoodie-white-front-600.jpg" width="600" height="1075" loading="lazy" decoding="async" alt="White MAXRIVEN hoodie, front: round M logo badge and label print on the chest, pink chevrons and MAXRIVEN text on the sleeves"></button>
             </div>
+            <!-- drop list: pick colour and size, then send Max one prefilled email -->
+            <form class="drop" data-drop novalidate>
+              <fieldset class="drop__row">
+                <legend class="mono">COLOUR</legend>
+                <label class="chip chip--swatch"><input type="radio" name="colour" value="Black" checked><span><i style="background:#141414"></i>BLACK</span></label>
+                <label class="chip chip--swatch"><input type="radio" name="colour" value="White"><span><i style="background:#f2f2ef"></i>WHITE</span></label>
+              </fieldset>
+              <fieldset class="drop__row">
+                <legend class="mono">SIZE</legend>
+                <label class="chip"><input type="radio" name="size" value="XS"><span>XS</span></label>
+                <label class="chip"><input type="radio" name="size" value="S"><span>S</span></label>
+                <label class="chip"><input type="radio" name="size" value="M" checked><span>M</span></label>
+                <label class="chip"><input type="radio" name="size" value="L"><span>L</span></label>
+                <label class="chip"><input type="radio" name="size" value="XL"><span>XL</span></label>
+                <label class="chip"><input type="radio" name="size" value="XXL"><span>XXL</span></label>
+              </fieldset>
+              <button class="btn btn--accent drop__go" type="submit">GET ON THE DROP LIST <span data-drop-pick>· BLACK / M</span> →</button>
+              <p class="drop__note mono" data-drop-note>Opens an email to Max with your colour and size. No payment, no account.</p>
+            </form>
           </div>
         </article>
       </div>
@@ -386,7 +406,7 @@
   <img class="lightbox__img" alt="">
 </dialog>
 
-<script src="js/background.js?v=20261031b"></script>
-<script src="js/main.js?v=20261031b"></script>
+<script src="js/background.js?v=20261101a"></script>
+<script src="js/main.js?v=20261101a"></script>
 </body>
 </html>

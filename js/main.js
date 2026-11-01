@@ -1,4 +1,4 @@
-// MAXRIVEN — mobile menu, the hero Insane preview, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
+// MAXRIVEN — mobile menu, the hero Insane preview, the hoodie drop list, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
 (function () {
   'use strict';
 
@@ -211,6 +211,55 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { cardVisible = e[0].isIntersecting; setDock(); }).observe(card);
     // and starting a music video stops the preview
     document.addEventListener('click', function (e) { if (e.target.closest('[data-yt], [data-yt-tile], [data-yt-jump]')) audio.pause(); }, true);
+  }
+
+  // Merch: turn the hoodie (button or a sideways swipe on the photo), and the drop list,
+  // which keeps the photos on the chosen colour and sends Max one prefilled email.
+  var drop = document.querySelector('[data-drop]');
+  if (drop) {
+    var product = drop.closest('[data-gallery]'), photo = product.querySelector('[data-open]');
+    var hoodies = product.querySelectorAll('.thumb'); // black back, black front, white back, white front
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var facing = function () { for (var i = 0; i < hoodies.length; i++) if (hoodies[i].getAttribute('aria-pressed') === 'true') return i; return 0; };
+    var go = function (i) {
+      if (i === facing()) return;
+      if (calm) { hoodies[i].click(); return; }
+      photo.classList.add('is-turning');
+      setTimeout(function () {
+        hoodies[i].click();
+        photo.classList.remove('is-turning'); photo.classList.add('is-landing');
+        void photo.offsetWidth; photo.classList.remove('is-landing');
+      }, 280);
+    };
+    product.querySelector('[data-turn]').addEventListener('click', function () { go(facing() ^ 1); });
+    var x0 = null, swiped = false;
+    photo.addEventListener('pointerdown', function (e) { x0 = e.clientX; swiped = false; });
+    photo.addEventListener('pointermove', function (e) { if (x0 !== null && !swiped && Math.abs(e.clientX - x0) > 40) { swiped = true; go(facing() ^ 1); } });
+    photo.addEventListener('pointerup', function () { x0 = null; });
+    photo.addEventListener('click', function (e) { if (swiped) { e.stopImmediatePropagation(); e.preventDefault(); swiped = false; } }, true);
+
+    var pick = drop.querySelector('[data-drop-pick]'), note = drop.querySelector('[data-drop-note]');
+    var val = function (n) { return drop.querySelector('input[name="' + n + '"]:checked').value; };
+    drop.addEventListener('change', function (e) {
+      pick.textContent = '· ' + val('colour').toUpperCase() + ' / ' + val('size');
+      if (e.target.name === 'colour') go((val('colour') === 'White' ? 2 : 0) + (facing() & 1));
+    });
+    // a thumbnail of the other colour switches the colour choice too
+    Array.prototype.forEach.call(hoodies, function (t, i) { t.addEventListener('click', function () {
+      var c = drop.querySelector('input[name="colour"][value="' + (i < 2 ? 'Black' : 'White') + '"]');
+      if (!c.checked) { c.checked = true; pick.textContent = '· ' + val('colour').toUpperCase() + ' / ' + val('size'); }
+    }); });
+    drop.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var line = 'MAXRIVEN hoodie, ' + val('colour') + ', size ' + val('size');
+      location.href = 'mailto:maxriven@icloud.com?subject=' + encodeURIComponent('Drop list: ' + line) +
+        '&body=' + encodeURIComponent('Hi Max,\n\nPut me on the drop list for the ' + line + '.\n\n');
+      note.innerHTML = 'Your mail app should open now. If it doesn’t, email <b>MAXRIVEN@ICLOUD.COM</b> with “' + line + '”.<button type="button">COPY</button>';
+      note.querySelector('button').addEventListener('click', function (ev) {
+        var b = ev.currentTarget;
+        if (navigator.clipboard) navigator.clipboard.writeText('maxriven@icloud.com — ' + line).then(function () { b.textContent = 'COPIED'; }, function () {});
+      });
+    });
   }
 
   // Hero visual area: a band of type and a thin text ring around the M logo, as real 3D rings.
