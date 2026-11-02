@@ -1,6 +1,38 @@
-// MAXRIVEN — mobile menu, the hero Insane preview, plugin screenshot galleries, lightbox, the hero knob and its orbiting 3D rings.
+// MAXRIVEN — sticky menu, mobile menu, the hero Insane preview, plugin screenshot galleries, lightbox, plugin DETAILS panel,
+// music video window, "Notify me" forms, the hero knob and its orbiting 3D rings.
 (function () {
   'use strict';
+
+  // The top bar stays on screen: sections scroll to just below it (--bar-h), the menu marks the section in view,
+  // and a back-to-top button appears after the first screen.
+  var bar = document.querySelector('.topbar'), root = document.documentElement;
+  var setBar = function () { root.style.setProperty('--bar-h', bar.offsetHeight + 'px'); };
+  setBar();
+  if ('ResizeObserver' in window) new ResizeObserver(setBar).observe(bar);   // the bar grows a little when the web fonts arrive
+  else window.addEventListener('resize', setBar);
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]'));
+  var sections = navLinks.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var toTop = document.querySelector('[data-to-top]');
+  var markScroll = function () {
+    var line = bar.offsetHeight + window.innerHeight * 0.3, active = -1;
+    sections.forEach(function (sec, i) { if (sec && sec.getBoundingClientRect().top <= line) active = i; });
+    if (window.innerHeight + window.scrollY >= root.scrollHeight - 4) active = sections.length - 1;   // the last section is short
+    navLinks.forEach(function (a, i) { if (i === active) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+    var show = window.scrollY > window.innerHeight * 0.8;
+    if (toTop.classList.contains('is-shown') !== show) { toTop.classList.toggle('is-shown', show); toTop.tabIndex = show ? 0 : -1; }
+  };
+  var marking = false;
+  window.addEventListener('scroll', function () {
+    if (marking) return;
+    marking = true;
+    requestAnimationFrame(function () { markScroll(); marking = false; });
+  }, { passive: true });
+  markScroll();
+  toTop.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    bar.querySelector('.brand').focus({ preventScroll: true });
+  });
 
   // Mobile menu: the two-line button in the top bar opens the full-screen nav.
   var menuBtn = document.querySelector('[data-menu-toggle]');
@@ -31,7 +63,7 @@
     window.matchMedia('(min-width: 701px)').addEventListener('change', function (e) { if (e.matches) setMenu(false); });
   }
 
-  var dialog = document.querySelector('.lightbox');
+  var dialog = document.querySelector('.lightbox:not(.vbox)');
   var lbImg = dialog.querySelector('.lightbox__img');
   var lbCount = dialog.querySelector('[data-lb-count]');
   var current = null; // { card, index }
@@ -51,6 +83,9 @@
     main.width = small.width;
     main.height = small.height;
     thumbs.forEach(function (t, i) { t.setAttribute('aria-pressed', i === index ? 'true' : 'false'); });
+    // merch: the colour buttons follow the photo
+    var colour = thumb.getAttribute('data-colour');
+    if (colour) card.querySelectorAll('.swatch').forEach(function (s) { s.setAttribute('aria-pressed', s.getAttribute('data-colour') === colour ? 'true' : 'false'); });
   }
 
   function activeIndex(card) {
@@ -69,7 +104,7 @@
     select(card, index);
   }
 
-  document.querySelectorAll('[data-gallery]').forEach(function (card) {
+  function wireGallery(card) {
     thumbsOf(card).forEach(function (thumb, i) {
       thumb.addEventListener('click', function () { select(card, i); });
     });
@@ -80,7 +115,14 @@
         else window.open(lbImg.src, '_blank');
       });
     });
-  });
+    card.querySelectorAll('.swatch').forEach(function (swatch) {
+      swatch.addEventListener('click', function () {
+        var i = thumbsOf(card).findIndex(function (t) { return t.getAttribute('data-colour') === swatch.getAttribute('data-colour'); });
+        if (i >= 0) select(card, i);
+      });
+    });
+  }
+  document.querySelectorAll('[data-gallery]').forEach(wireGallery);
 
   dialog.querySelector('[data-lb-prev]').addEventListener('click', function () { show(current.card, current.index - 1); });
   dialog.querySelector('[data-lb-next]').addEventListener('click', function () { show(current.card, current.index + 1); });
@@ -106,37 +148,112 @@
     }, { passive: true });
   }
 
-  // YouTube: thumbnails are local; the player (youtube-nocookie) loads only after a click.
-  var player = document.querySelector('[data-yt-player]');
-  if (player) {
-    var playVideo = function (id, title) {
+  // Music videos: the big Insane poster and the tiles play in a video window on the page (youtube-nocookie, autoplay;
+  // thumbnails are local, so nothing loads from YouTube before a click). Closing the window removes the player, so the
+  // video stops. The tiles are plain YouTube links, which is what they stay without JS or <dialog>.
+  var vbox = document.querySelector('.vbox');
+  if (vbox && typeof vbox.showModal === 'function') {
+    var vFrame = vbox.querySelector('[data-vbox-frame]');
+    var openVideo = function (id, title) {
       var frame = document.createElement('iframe');
       frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
       frame.title = 'MAXRIVEN – ' + (title || 'music video');
       frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       frame.allowFullscreen = true;
-      player.innerHTML = '';
-      player.appendChild(frame);
+      vFrame.innerHTML = '';
+      vFrame.appendChild(frame);
+      vbox.querySelector('[data-vbox-title]').textContent = 'MAXRIVEN · ' + (title || 'music video').toUpperCase();
+      vbox.querySelector('[data-vbox-link]').href = 'https://www.youtube.com/watch?v=' + id;
+      vbox.showModal();
     };
-    player.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-yt]');
-      if (btn) playVideo(btn.getAttribute('data-yt'), 'Insane');
-    });
-    // Video tiles are plain YouTube links; with JS they play in the player instead.
-    document.querySelectorAll('[data-yt-tile]').forEach(function (tile) {
-      tile.addEventListener('click', function (e) {
+    document.querySelectorAll('[data-yt], [data-yt-tile]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
         e.preventDefault();
-        playVideo(tile.getAttribute('data-yt-tile'), tile.getAttribute('data-yt-title'));
-        player.scrollIntoView({ block: 'center' });
+        openVideo(el.getAttribute('data-yt') || el.getAttribute('data-yt-tile'), el.getAttribute('data-yt-title'));
       });
     });
-    document.querySelectorAll('[data-yt-jump]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-        player.scrollIntoView({ block: 'center' });
-        playVideo(link.getAttribute('data-yt-jump'), 'Insane');
-      });
+    vbox.querySelector('[data-vbox-close]').addEventListener('click', function () { vbox.close(); });
+    vbox.addEventListener('click', function (e) { if (e.target === vbox) vbox.close(); });
+    vbox.addEventListener('close', function () { vFrame.innerHTML = ''; });
+  } else {
+    var poster = document.querySelector('[data-yt]');
+    if (poster) poster.addEventListener('click', function () { window.open('https://www.youtube.com/watch?v=' + poster.getAttribute('data-yt'), '_blank', 'noopener'); });
+  }
+
+  // "Notify me" forms: e-mail, a required consent box and the product's name in a hidden field. With NOTIFY_FORM_URL set
+  // in js/config.js they post to that form service; while it is empty they open an e-mail to NOTIFY_EMAIL with the
+  // product in the subject.
+  var CONFIG = window.MAXRIVEN_CONFIG || {};
+  var NOTIFY_EMAIL = CONFIG.NOTIFY_EMAIL || 'maxriven@icloud.com';
+  function notifyMsg(form, text, kind) {
+    var msg = form.querySelector('[data-notify-msg]');
+    msg.textContent = text;
+    msg.className = 'notify__msg' + (kind ? ' is-' + kind : '');
+  }
+  function resetNotify(form) { form.reset(); notifyMsg(form, '', ''); }
+  document.querySelectorAll('[data-notify]').forEach(function (form) {
+    form.addEventListener('input', function () { if (form.querySelector('.notify__msg.is-error')) notifyMsg(form, '', ''); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.elements.email, consent = form.elements.consent, product = form.elements.product.value;
+      if (!email.value.trim() || !email.checkValidity()) { notifyMsg(form, 'Please enter a valid e-mail address.', 'error'); email.focus(); return; }
+      if (!consent.checked) { notifyMsg(form, 'Please tick the box to agree to release news.', 'error'); consent.focus(); return; }
+      if (CONFIG.NOTIFY_FORM_URL) {
+        var btn = form.querySelector('[type="submit"]');
+        btn.disabled = true;
+        notifyMsg(form, 'Sending…', '');
+        fetch(CONFIG.NOTIFY_FORM_URL, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+          .then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            resetNotify(form);
+            notifyMsg(form, 'Thanks! You will hear from us when ' + product + ' is out.', 'ok');
+          })
+          .catch(function () { notifyMsg(form, 'Sorry, that did not work. Please try again or write to ' + NOTIFY_EMAIL + '.', 'error'); })
+          .then(function () { btn.disabled = false; });
+        return;
+      }
+      var body = 'Please let me know when ' + product + ' is released.\n\nMy e-mail: ' + email.value.trim() +
+        '\nI agree to receive news about MAXRIVEN releases. I can unsubscribe at any time.';
+      window.location.href = 'mailto:' + NOTIFY_EMAIL + '?subject=' + encodeURIComponent('Notify me – ' + product) + '&body=' + encodeURIComponent(body);
+      notifyMsg(form, 'Almost done: your e-mail app opens with the message ready – just press send.', 'ok');
     });
+  });
+
+  // Plugin DETAILS panel: the card's screenshots (the big one still enlarges), its name and features (<template> in
+  // the card), TBA facts and the notify form for that plugin. NOTIFY ME on a card opens the panel at the form.
+  var details = document.querySelector('.details');
+  if (details && typeof details.showModal === 'function') {
+    var dGallery = details.querySelector('[data-details-gallery]'), dMedia = details.querySelector('[data-details-media]');
+    var dForm = details.querySelector('[data-notify]');
+    var openDetails = function (card, atForm) {
+      var screen = card.querySelector('.screen').cloneNode(true), thumbs = card.querySelector('.thumbs').cloneNode(true);
+      var big = screen.querySelector('img');
+      big.setAttribute('sizes', '(max-width: 760px) 92vw, 620px');
+      big.removeAttribute('loading');
+      dMedia.innerHTML = '';
+      dMedia.appendChild(screen);
+      dMedia.appendChild(thumbs);
+      wireGallery(dGallery);
+      var name = card.getAttribute('data-product');
+      details.querySelector('[data-details-kicker]').textContent = card.querySelector('.plugin__top .mono').textContent;
+      details.querySelector('[data-details-title]').textContent = name;
+      var content = details.querySelector('[data-details-content]');
+      content.innerHTML = '';
+      content.appendChild(card.querySelector('template[data-details-body]').content.cloneNode(true));
+      resetNotify(dForm);
+      details.querySelector('[data-details-product]').value = name;
+      details.showModal();
+      dGallery.scrollTop = 0;
+      if (atForm) {
+        dForm.scrollIntoView({ block: 'nearest' });
+        dForm.elements.email.focus({ preventScroll: true });
+      }
+    };
+    document.querySelectorAll('.plugin [data-details]').forEach(function (btn) {
+      btn.addEventListener('click', function () { openDetails(btn.closest('.plugin'), btn.getAttribute('data-details') === 'notify'); });
+    });
+    details.querySelector('[data-details-close]').addEventListener('click', function () { details.close(); });
+    details.addEventListener('click', function (e) { if (e.target === details) details.close(); });
   }
 
   // Hero release card: the cover plays a 45 s preview of Insane right on the page (nothing loads
@@ -148,8 +265,6 @@
     var audio = new Audio(), DUR = 45, env = null, loaded = false;
     audio.preload = 'none';
     var dock = document.querySelector('[data-dock]');
-    // starting the preview puts a playing music video back to its poster
-    var vplayer = document.querySelector('[data-yt-player]'), facade = vplayer ? vplayer.innerHTML : '';
     var toggles = document.querySelectorAll('[data-preview-toggle]'), times = document.querySelectorAll('[data-preview-time]');
     var fills = document.querySelectorAll('.np__bar i, .dock__bar i'), bars = card.querySelectorAll('.np__eq i'), seekBar = card.querySelector('[data-preview-seek]');
     var fmt = function (t) { t = Math.max(0, Math.floor(t)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); };
@@ -191,7 +306,6 @@
     var toggle = function () {
       load();
       if (audio.paused) {
-        if (vplayer && vplayer.querySelector('iframe')) vplayer.innerHTML = facade;
         var p = audio.play(); if (p && p.catch) p.catch(function () {});
       } else audio.pause();
     };
@@ -210,7 +324,7 @@
     });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { cardVisible = e[0].isIntersecting; setDock(); }).observe(card);
     // and starting a music video stops the preview
-    document.addEventListener('click', function (e) { if (e.target.closest('[data-yt], [data-yt-tile], [data-yt-jump]')) audio.pause(); }, true);
+    document.addEventListener('click', function (e) { if (e.target.closest('[data-yt], [data-yt-tile]')) audio.pause(); }, true);
   }
 
   // Hero visual area: a band of type and a thin text ring around the M logo, as real 3D rings.
