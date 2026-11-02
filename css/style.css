@@ -630,7 +630,8 @@ html:has(dialog[open]) { overflow: hidden; }
 .details__info > .badge { align-self: flex-start; }
 .details h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(24px, 2.6vw, 34px); letter-spacing: 0.04em; }
 .details__desc { margin: 0; font-size: 16px; line-height: 1.55; color: var(--line); }
-.details__features { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.details__content { display: flex; flex-direction: column; gap: 16px; }
+.details__features { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .details__features li { position: relative; padding-left: 20px; font-size: 15px; line-height: 1.5; color: var(--line); }
 .details__features li::before { content: ''; position: absolute; left: 2px; top: 0.55em; width: 7px; height: 7px; border-radius: 50%; background: var(--led); }
 @media (max-width: 760px) {

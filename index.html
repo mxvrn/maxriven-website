@@ -19,8 +19,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="assets/logo/maxriven-m-logo-512.png">
 <link rel="icon" type="image/png" href="assets/logo/favicon-64.png">
-<link rel="stylesheet" href="css/fonts.css?v=20261102a">
-<link rel="stylesheet" href="css/style.css?v=20261102a">
+<link rel="stylesheet" href="css/fonts.css?v=20261102b">
+<link rel="stylesheet" href="css/style.css?v=20261102b">
 </head>
 <body>
 
@@ -252,15 +252,25 @@
             <button class="btn btn--ghost btn--small" type="button" data-details="notify">NOTIFY ME</button>
             <button class="btn btn--dark btn--small" type="button" data-details>DETAILS →</button>
           </div>
-          <!-- DETAILS panel content (features from the screenshots on this page; formats, system, release and price are TBA) -->
+          <!-- DETAILS panel content: features from the plug-in's newest version (see _raport/2026-11-02/RAPORT-2.md) -->
           <template data-details-body>
             <p class="details__desc">Parametric equalizer.</p>
             <ul class="details__features">
-              <li>EQ curve drawn over the live spectrum of the track</li>
-              <li>Linear Phase mode</li>
-              <li>Peak meters</li>
-              <li>Dark and light modes with colour themes</li>
+              <li>Up to 24 bands with 10 filter shapes: Bell, Low and High Shelf, Low and High Cut, Notch, Band Pass, Tilt Shelf, Flat Tilt and All Pass</li>
+              <li>Slopes from 6 to 96 dB/oct</li>
+              <li>Zero Latency, Analog Phase and Linear Phase processing, with five Linear Phase resolutions</li>
+              <li>Spectrum analyzer for input and output (PRE / POST), LIVE or AVG, with Freeze</li>
+              <li>Side-chain input with its own spectrum (SC)</li>
+              <li>Output Gain ring around the bypass button (±24 dB) and output meters with peak hold and clip</li>
+              <li>Fast editing: drag nodes on the curve, scroll for Q, type exact values, undo and redo</li>
+              <li>Dark and light themes, six colour palettes and four window sizes</li>
             </ul>
+            <dl class="specs">
+              <div><dt>FORMATS</dt><dd>AU</dd></div>
+              <div><dt>SYSTEM</dt><dd>macOS 12+</dd></div>
+              <div><dt>RELEASE</dt><dd>TBA</dd></div>
+              <div><dt>PRICE</dt><dd>TBA</dd></div>
+            </dl>
           </template>
         </article>
 
@@ -277,22 +287,31 @@
           </div>
           <div>
             <h3 id="p-side">SIDE</h3>
-            <p>Sidechain and volume shaping.</p>
+            <p>Sidechain ducking and kick / bass phase alignment.</p>
           </div>
           <div class="plugin__foot">
             <button class="btn btn--ghost btn--small" type="button" data-details="notify">NOTIFY ME</button>
             <button class="btn btn--dark btn--small" type="button" data-details>DETAILS →</button>
           </div>
-          <!-- DETAILS panel content (features from the screenshots on this page; formats, system, release and price are TBA) -->
+          <!-- DETAILS panel content: features from the plug-in's newest version (see _raport/2026-11-02/RAPORT-2.md) -->
           <template data-details-body>
-            <p class="details__desc">Sidechain and volume shaping.</p>
+            <p class="details__desc">Sidechain ducking and kick / bass phase alignment.</p>
             <ul class="details__features">
-              <li>Pump curve that ducks the bassline</li>
-              <li>Duck, Edge, Amount and Fade controls</li>
-              <li>Auto Phase</li>
-              <li>Mix dial</li>
-              <li>Dark and light modes with colour themes</li>
+              <li>FOLLOW mode: the bass ducks along the kick’s own envelope, live</li>
+              <li>DRAW mode: draw your own ducking curve with points and bends, triggered by the beat, by the kick or at a rate in Hz</li>
+              <li>PUMP: the bass comes back on time and fades out before the next kick</li>
+              <li>DUCK, EDGE, AMOUNT and FADE in FOLLOW; LENGTH, EDGE, SHAPE and RETURN in DRAW; MIX down to full silence</li>
+              <li>AUTO PHASE lines the bass up with the kick, note by note; manual phase wheel and Ø polarity invert</li>
+              <li>KICK and BASS roles with LINK (A / B / C): two instances share their settings and the kick fades out as the bass returns</li>
+              <li>48 built-in presets: ducking curves, trance gates and bass shapes</li>
+              <li>Kick and bass waveforms, gain-reduction meter and phase scope; dark and light themes with six colour palettes</li>
             </ul>
+            <dl class="specs">
+              <div><dt>FORMATS</dt><dd>AU</dd></div>
+              <div><dt>SYSTEM</dt><dd>macOS 12+</dd></div>
+              <div><dt>RELEASE</dt><dd>TBA</dd></div>
+              <div><dt>PRICE</dt><dd>TBA</dd></div>
+            </dl>
           </template>
         </article>
 
@@ -315,15 +334,25 @@
             <button class="btn btn--ghost btn--small" type="button" data-details="notify">NOTIFY ME</button>
             <button class="btn btn--dark btn--small" type="button" data-details>DETAILS →</button>
           </div>
-          <!-- DETAILS panel content (features from the screenshots on this page; formats, system, release and price are TBA) -->
+          <!-- DETAILS panel content: features from the plug-in's newest version (see _raport/2026-11-02/RAPORT-2.md) -->
           <template data-details-body>
             <p class="details__desc">Reference and mix analysis for Logic Pro.</p>
             <ul class="details__features">
-              <li>Spectrum of your mix compared with a reference track</li>
-              <li>Waveform, Stereo, Low End and Loudness panels</li>
-              <li>Stereo view with vectorscopes and correlation for the mix and the reference</li>
-              <li>Dark and light modes with colour themes</li>
+              <li>Your mix and a reference track on one spectrum, LIVE or AVG</li>
+              <li>One click switches what you hear between your mix (MIX) and the reference (REF)</li>
+              <li>Eight reference slots: drop in WAV, AIFF, FLAC or MP3 files, loop any section, play with the host or on its own</li>
+              <li>Match RMS brings the reference to your mix’s level for a fair comparison</li>
+              <li>Listen to one of seven frequency bands in both the mix and the reference (keys 1–7)</li>
+              <li>Waveform, Stereo, Low End and Loudness views: vectorscope and correlation, 10–250 Hz bands, LUFS history</li>
+              <li>Meters in PEAK, RMS or LUFS (momentary, short-term, integrated)</li>
+              <li>Placement guides show where kick, bass, hats and other sounds usually sit, by genre</li>
             </ul>
+            <dl class="specs">
+              <div><dt>FORMATS</dt><dd>AU</dd></div>
+              <div><dt>SYSTEM</dt><dd>macOS 12+</dd></div>
+              <div><dt>RELEASE</dt><dd>TBA</dd></div>
+              <div><dt>PRICE</dt><dd>TBA</dd></div>
+            </dl>
           </template>
         </article>
 
@@ -346,15 +375,24 @@
             <button class="btn btn--ghost btn--small" type="button" data-details="notify">NOTIFY ME</button>
             <button class="btn btn--dark btn--small" type="button" data-details>DETAILS →</button>
           </div>
-          <!-- DETAILS panel content (features from the screenshots on this page; formats, system, release and price are TBA) -->
+          <!-- DETAILS panel content: features from the plug-in's newest version (see _raport/2026-11-02/RAPORT-2.md) -->
           <template data-details-body>
             <p class="details__desc">Key and tempo detection.</p>
             <ul class="details__features">
-              <li>Detects the key and shows its Camelot code (for example 11A)</li>
-              <li>Detects the tempo in BPM</li>
-              <li>Settings for appearance, BPM display and Auto Listen</li>
-              <li>Dark and light modes</li>
+              <li>Detects the key of what is playing: all 24 major and minor keys, written with sharps (for example F# Minor)</li>
+              <li>Shows the key code for harmonic mixing next to the key (for example 11A)</li>
+              <li>Detects the tempo: a first BPM within seconds, then a stable value</li>
+              <li>BPM as a whole number or with one decimal</li>
+              <li>Auto Listen starts a fresh analysis when the host starts playing; LISTEN and RESET by hand</li>
+              <li>Audio passes through untouched</li>
+              <li>Dark and light appearance</li>
             </ul>
+            <dl class="specs">
+              <div><dt>FORMATS</dt><dd>AU</dd></div>
+              <div><dt>SYSTEM</dt><dd>macOS 12+</dd></div>
+              <div><dt>RELEASE</dt><dd>TBA</dd></div>
+              <div><dt>PRICE</dt><dd>TBA</dd></div>
+            </dl>
           </template>
         </article>
 
@@ -461,7 +499,7 @@
   <img class="lightbox__img" alt="Enlarged screenshot">
 </dialog>
 
-<!-- Plugin DETAILS panel: filled from the plugin card (screenshots, name) and its <template data-details-body> -->
+<!-- Plugin DETAILS panel: filled from the plugin card (screenshots, name) and its <template data-details-body> (text, features, facts) -->
 <dialog class="details" aria-labelledby="details-title">
   <div class="details__bar">
     <span class="mono" data-details-kicker></span>
@@ -472,13 +510,7 @@
     <div class="details__info">
       <span class="badge">COMING SOON</span>
       <h3 id="details-title" data-details-title></h3>
-      <div data-details-content></div>
-      <dl class="specs">
-        <div><dt>FORMATS</dt><dd>TBA</dd></div>
-        <div><dt>SYSTEM</dt><dd>TBA</dd></div>
-        <div><dt>RELEASE</dt><dd>TBA</dd></div>
-        <div><dt>PRICE</dt><dd>TBA</dd></div>
-      </dl>
+      <div class="details__content" data-details-content></div>
       <form class="notify" data-notify novalidate>
         <p class="notify__title mono">NOTIFY ME ABOUT THE RELEASE</p>
         <input type="hidden" name="product" value="" data-details-product>
@@ -506,8 +538,8 @@
   <div class="vbox__frame" data-vbox-frame></div>
 </dialog>
 
-<script src="js/config.js?v=20261102a"></script>
-<script src="js/background.js?v=20261102a"></script>
-<script src="js/main.js?v=20261102a"></script>
+<script src="js/config.js?v=20261102b"></script>
+<script src="js/background.js?v=20261102b"></script>
+<script src="js/main.js?v=20261102b"></script>
 </body>
 </html>
