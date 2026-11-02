@@ -220,7 +220,7 @@
   });
 
   // Plugin DETAILS panel: the card's screenshots (the big one still enlarges), its name and features (<template> in
-  // the card), TBA facts and the notify form for that plugin. NOTIFY ME on a card opens the panel at the form.
+  // the card), facts (formats, system, release, price) and the notify form for that plugin. NOTIFY ME on a card opens the panel at the form.
   var details = document.querySelector('.details');
   if (details && typeof details.showModal === 'function') {
     var dGallery = details.querySelector('[data-details-gallery]'), dMedia = details.querySelector('[data-details-media]');
