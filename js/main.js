@@ -161,6 +161,9 @@
       sheet.classList.toggle('sheet--portrait', tpl.hasAttribute('data-portrait'));
       $('[data-sheet-kicker]', sheet).textContent = tpl.getAttribute('data-kicker');
       $('[data-sheet-title]', sheet).textContent = tpl.getAttribute('data-name');
+      var status = $('[data-sheet-status]', sheet);
+      status.textContent = tpl.getAttribute('data-status') || '';
+      status.hidden = !status.textContent;
       sImg.style.aspectRatio = tpl.getAttribute('data-ratio');
       sThumbs.innerHTML = '';
       shots.forEach(function (s, i) {
@@ -182,7 +185,7 @@
       holder.appendChild(content);
       resetNotify(sForm);
       sForm.elements.product.value = tpl.getAttribute('data-name');
-      $('.notify__label', sForm).textContent = 'Get an e-mail when ' + tpl.getAttribute('data-short').replace('HOODIE', 'the hoodie') + ' is out';
+      $('.notify__label', sForm).textContent = tpl.getAttribute('data-notify-label');
       sheet.showModal();
       sheet.scrollTop = 0;
     };
@@ -257,14 +260,15 @@
     var setDock = function () { dock.hidden = audio.paused || heroVisible; };
     var paint = function () {
       var t = audio.currentTime || 0;
-      preview.style.setProperty('--p', Math.min(100, t / DUR * 100).toFixed(2));
-      times.forEach(function (el) { el.textContent = loaded ? fmt(t) + ' / 0:45' : 'Preview'; });
+      preview.style.setProperty('--p', Math.min(100, t / (isFinite(audio.duration) && audio.duration > 0 ? audio.duration : DUR) * 100).toFixed(2));
+      var total = isFinite(audio.duration) && audio.duration > 0 ? audio.duration : DUR;
+      times.forEach(function (el) { el.textContent = loaded ? fmt(t) + ' / ' + fmt(total) : (el.getAttribute('data-label') || el.textContent); });
       if (!audio.paused) raf = requestAnimationFrame(paint);
     };
     var ui = function () {
       var on = !audio.paused;
       [preview, dock].forEach(function (el) { el.classList.toggle('is-playing', on); });
-      toggles.forEach(function (b) { b.setAttribute('aria-label', (on ? 'Pause' : 'Play') + ' the 45-second preview of Insane'); });
+      toggles.forEach(function (b) { b.setAttribute('aria-label', (on ? 'Pause' : 'Play') + ' the preview'); });
       setDock();
     };
     toggles.forEach(function (b) {
